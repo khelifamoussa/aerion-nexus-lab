@@ -1,5 +1,7 @@
-name: Deploy AERION NEXUS to GitHub Pages
+name: Validate and deploy AERION NEXUS
 on:
+  pull_request:
+    branches: [main]
   push:
     branches: [main]
   workflow_dispatch:
@@ -8,7 +10,7 @@ permissions:
   pages: write
   id-token: write
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   build:
@@ -19,13 +21,17 @@ jobs:
         with:
           node-version: 20
           cache: npm
-      - run: npm ci
+          cache-dependency-path: package.json
+      - run: npm install --no-audit --no-fund
       - run: npm run build
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - if: github.event_name != 'pull_request'
+        uses: actions/configure-pages@v5
+      - if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
         with:
           path: dist
   deploy:
+    if: github.event_name != 'pull_request'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
