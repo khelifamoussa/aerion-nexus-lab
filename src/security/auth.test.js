@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { can, roles } from './security/auth'
+import { can, roles } from './auth'
 
 describe('role permissions',()=>{
   it('keeps publication management director-only',()=>{
