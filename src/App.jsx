@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Activity, Atom, BookOpen, Box, BrainCircuit, CircleGauge, Database, FileText, FlaskConical, Languages, Pause, Play, Search, ShieldCheck, Sparkles, Wind } from 'lucide-react'
 import HangarScene from './HangarScene'
+import LoginPortal, { AccessIdentity } from './LoginPortal'
+import { clearSession, restoreSession } from './security/auth'
 import { agents, metrics, modules, stages } from './labData'
 
 const nav=[['Mission Control',CircleGauge],['Four Agents',BrainCircuit],['Digital Twin',Box],['Simulation',Activity],['Algorithms',Atom],['Evidence',Database],['Manuscript',FileText],['Publication',BookOpen]]
@@ -35,6 +37,7 @@ function Workspace({view}){
 }
 
 export default function App(){
+  const [session,setSession]=useState(()=>restoreSession())
   const [view,setView]=useState('Mission Control')
   const [running,setRunning]=useState(false)
   const [lang,setLang]=useState('EN')
@@ -42,11 +45,13 @@ export default function App(){
   const [time,setTime]=useState(0)
   useEffect(()=>{if(!running)return;const t=setInterval(()=>setTime(x=>x>=100?0:x+1),120);return()=>clearInterval(t)},[running])
   const mission=view==='Mission Control'
+  function logout(){ clearSession(); setSession(null) }
+  if(!session) return <LoginPortal onAuthenticated={setSession}/>
   return <div className="app" dir={lang==='AR'?'rtl':'ltr'}>
     <header className="topbar"><a className="brand"><span className="mark"><i/></span><span><b>AERION NEXUS</b><small>Autonomous Flight · Intelligent Control · AI</small></span></a>
       <div className="lab-status"><i/> LAB ONLINE <b>EXP-024</b></div>
       <label className="search"><Search/><input placeholder="Search experiment, equation, evidence…"/></label>
-      <button className="language" onClick={()=>setLang(lang==='EN'?'AR':'EN')}><Languages/>{lang==='EN'?'العربية':'English'}</button><button className="profile">MK</button>
+      <button className="language" onClick={()=>setLang(lang==='EN'?'AR':'EN')}><Languages/>{lang==='EN'?'العربية':'English'}</button><AccessIdentity session={session} onLogout={logout}/>
     </header>
     <aside className="nav"><div className="nav-title">RESEARCH SPACES</div>{nav.map(([name,Icon])=><button key={name} onClick={()=>setView(name)} className={view===name?'active':''}><Icon/><span>{name}</span>{name==='Manuscript'&&<em>82%</em>}</button>)}<div className="system"><ShieldCheck/><span><b>System nominal</b><small>Evidence gates active</small></span></div></aside>
     <main><AnimatePresence mode="wait">{mission?<motion.section key="mission" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="mission">
