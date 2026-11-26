@@ -24,7 +24,7 @@ export function normalizeSupabaseSession(session){
 }
 export async function requestMagicLink(email){
  if(!supabaseConfigured)throw new Error('Supabase is not configured.')
- const{error}=await supabase.auth.signInWithOtp({email,options:{shouldCreateUser:false,emailRedirectTo:window.location.origin+window.location.pathname}})
+ const{error}=await supabase.auth.signInWithOtp({email,options:{shouldCreateUser:true,emailRedirectTo:window.location.origin+window.location.pathname}})
  if(error)throw error
 }
 export async function loadSecureSession(){
