@@ -22,3 +22,21 @@ export const publicationTargets=[
   {name:'Aerospace Science and Technology',publisher:'Elsevier',fit:'Review',scope:'Advanced aerospace systems, modeling and validation.',template:'Elsevier numbered'},
   {name:'Journal of Intelligent & Robotic Systems',publisher:'Springer',fit:'Review',scope:'Intelligent autonomous and robotic systems.',template:'Springer Nature'}
 ]
+
+export const algorithmRegistry=[
+ {family:'Controller',name:'PID + Anti-windup',maturity:'Baseline',purpose:'Transparent reference controller for fair comparison.',assumptions:'Local tracking; tuned gains',compute:'Low',validation:'Unit + seeded simulation',tests:8},
+ {family:'Controller',name:'LQR / LQI',maturity:'Stable',purpose:'Linear optimal regulation around declared operating points.',assumptions:'Linearized dynamics',compute:'Low',validation:'Seeded simulation',tests:7},
+ {family:'Controller',name:'Nonlinear MPC',maturity:'Advanced',purpose:'Constrained receding-horizon trajectory tracking.',assumptions:'Model fidelity; solver convergence',compute:'High',validation:'Benchmark pending',tests:5},
+ {family:'Optimizer',name:'Particle Swarm',maturity:'Stable',purpose:'Population-based gain and design search.',assumptions:'Bounded search space',compute:'Medium',validation:'Repeatability suite',tests:7},
+ {family:'Optimizer',name:'Differential Evolution',maturity:'Stable',purpose:'Robust derivative-free global search.',assumptions:'Bounded continuous variables',compute:'Medium',validation:'Repeatability suite',tests:7},
+ {family:'Optimizer',name:'Bayesian Optimization',maturity:'Advanced',purpose:'Sample-efficient tuning of expensive objectives.',assumptions:'Surrogate adequacy',compute:'Medium',validation:'Experimental adapter',tests:4},
+ {family:'Estimator',name:'Extended Kalman Filter',maturity:'Stable',purpose:'State estimation for mildly nonlinear models.',assumptions:'Local linearization; Gaussian noise',compute:'Low',validation:'Noise campaign',tests:8},
+ {family:'Estimator',name:'Disturbance Observer',maturity:'Advanced',purpose:'Estimate lumped wind and modeling disturbances.',assumptions:'Bounded disturbance dynamics',compute:'Low',validation:'Benchmark pending',tests:5},
+ {family:'Planner',name:'Waypoint Planner',maturity:'Baseline',purpose:'Deterministic mission reference generation.',assumptions:'Known free-space waypoints',compute:'Low',validation:'Unit tested',tests:8},
+ {family:'Planner',name:'Trajectory Optimization',maturity:'Advanced',purpose:'Constraint-aware smooth reference generation.',assumptions:'Feasible initialization',compute:'High',validation:'Simulation only',tests:5}
+]
+export const manuscriptSections=[
+ {title:'Title & Abstract',state:'Ready'},{title:'Introduction',state:'Ready'},{title:'Related Work',state:'Review'},
+ {title:'Problem Formulation',state:'Ready'},{title:'Proposed Method',state:'Ready'},{title:'Experimental Protocol',state:'Ready'},
+ {title:'Results',state:'Review'},{title:'Discussion & Limitations',state:'Ready'},{title:'Conclusion',state:'Draft'},{title:'References',state:'Review'}
+]
