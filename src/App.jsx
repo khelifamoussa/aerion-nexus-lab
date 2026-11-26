@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Activity, Atom, BookOpen, Box, BrainCircuit, CircleGauge, Database, FileText, FlaskConical, Languages, Pause, Play, Search, ShieldCheck, Sparkles, Wind } from 'lucide-react'
 import HangarScene from './HangarScene'
 import LoginPortal, { AccessIdentity } from './LoginPortal'
-import { clearSession, restoreSession } from './security/auth'
+import { authMode, clearSession, listenForAuthChanges, loadSecureSession, restoreSession } from './security/auth'
 import { EvidenceWorkspace, PublicationWorkspace, SimulationWorkspace } from './ResearchWorkspaces'
 import { AgentWorkspace, AlgorithmWorkspace, DigitalTwinWorkspace, ManuscriptWorkspace } from './AdvancedWorkspaces'
 import { agents, metrics, modules, stages } from './labData'
@@ -53,8 +53,15 @@ export default function App(){
   const [camera,setCamera]=useState('orbit')
   const [time,setTime]=useState(0)
   useEffect(()=>{if(!running)return;const t=setInterval(()=>setTime(x=>x>=100?0:x+1),120);return()=>clearInterval(t)},[running])
+  useEffect(()=>{
+    let active=true
+    if(authMode==='supabase') loadSecureSession().then(s=>{if(active)setSession(s)}).catch(()=>{if(active)setSession(null)})
+    const stop=listenForAuthChanges(s=>{if(active)setSession(s)})
+    return()=>{active=false;stop()}
+  },[])
   const mission=view==='Mission Control'
-  function logout(){ clearSession(); setSession(null) }
+  async function logout(){ await clearSession(); setSession(null) }
+  if(session===undefined) return <div className="secure-loading"><span className="mark"><i/></span><b>Establishing secure laboratory session…</b></div>
   if(!session) return <LoginPortal onAuthenticated={setSession}/>
   return <div className="app" dir={lang==='AR'?'rtl':'ltr'}>
     <header className="topbar"><a className="brand"><span className="mark"><i/></span><span><b>AERION NEXUS</b><small>Autonomous Flight · Intelligent Control · AI</small></span></a>
