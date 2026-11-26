@@ -27,7 +27,7 @@ The authoritative migration history is recorded by Supabase. Before subsequent d
 
 ## Access model
 
-- Accounts are invitation-only; the frontend calls `signInWithOtp` with `shouldCreateUser:false`.
+- Accounts are invitation-only. The frontend may request account creation, but a database `BEFORE INSERT` trigger rejects every email without an active server-side invitation.
 - Users cannot select or edit their own laboratory role.
 - Project access is resolved from `project_memberships`.
 - The internal role-check function lives in the non-exposed `private` schema.
@@ -55,3 +55,7 @@ The first director must be invited from the Supabase dashboard or a trusted serv
 - Health Advisor: no findings.
 - Foreign-key indexes added.
 - Unused-index notices are expected until real workload begins.
+
+## Initial director invitation
+
+The email `khalifamoussa21@gmail.com` is registered as the first director invitation. It expires after seven days if unused. On first successful magic-link sign-in, database triggers create the profile, bootstrap the AERION research project and add its creator as director. Authorization still comes from project membership, not editable user metadata.
