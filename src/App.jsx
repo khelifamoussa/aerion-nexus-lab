@@ -6,9 +6,10 @@ import LoginPortal, { AccessIdentity } from './LoginPortal'
 import { authMode, clearSession, listenForAuthChanges, loadSecureSession, restoreSession } from './security/auth'
 import { EvidenceWorkspace, PublicationWorkspace, SimulationWorkspace } from './ResearchWorkspaces'
 import { AgentWorkspace, AlgorithmWorkspace, DigitalTwinWorkspace, ManuscriptWorkspace } from './AdvancedWorkspaces'
+import ProblemWorkspace from './ProblemWorkspace'
 import { agents, metrics, modules, stages } from './labData'
 
-const nav=[['Mission Control',CircleGauge],['Four Agents',BrainCircuit],['Digital Twin',Box],['Simulation',Activity],['Algorithms',Atom],['Evidence',Database],['Manuscript',FileText],['Publication',BookOpen]]
+const nav=[['Mission Control',CircleGauge],['Problem Definition',FlaskConical],['Four Agents',BrainCircuit],['Digital Twin',Box],['Simulation',Activity],['Algorithms',Atom],['Evidence',Database],['Manuscript',FileText],['Publication',BookOpen]]
 
 function AgentRail({running}){
   return <div className="agent-rail">{agents.map(a=><motion.article key={a.id} whileHover={{x:5}} className="agent-node" style={{'--agent':a.color}}>
@@ -31,7 +32,8 @@ function MetricWave({running}){
   </div>
 }
 
-function Workspace({view}){
+function Workspace({view,onNavigate}){
+  if(view==='Problem Definition') return <ProblemWorkspace onLaunch={()=>onNavigate('Four Agents')}/>
   if(view==='Four Agents') return <AgentWorkspace/>
   if(view==='Digital Twin') return <DigitalTwinWorkspace/>
   if(view==='Algorithms') return <AlgorithmWorkspace/>
@@ -71,10 +73,10 @@ export default function App(){
     </header>
     <aside className="nav"><div className="nav-title">RESEARCH SPACES</div>{nav.map(([name,Icon])=><button key={name} onClick={()=>setView(name)} className={view===name?'active':''}><Icon/><span>{name}</span>{name==='Manuscript'&&<em>82%</em>}</button>)}<div className="system"><ShieldCheck/><span><b>System nominal</b><small>Evidence gates active</small></span></div></aside>
     <main><AnimatePresence mode="wait">{mission?<motion.section key="mission" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="mission">
-      <div className="title-row"><div><small>AUTONOMOUS RESEARCH HANGAR</small><h1>Research Mission Control</h1><p>Robust 3D UAV trajectory tracking under crosswind and model uncertainty.</p></div><button className="run" onClick={()=>setRunning(!running)}>{running?<Pause/>:<Play/>}{running?'Pause experiment':'Run research cycle'}</button></div>
+      <div className="title-row"><div><small>AUTONOMOUS RESEARCH HANGAR</small><h1>Research Mission Control</h1><p>Robust 3D UAV trajectory tracking under crosswind and model uncertainty.</p></div><div className="mission-actions"><button className="define-problem" onClick={()=>setView('Problem Definition')}><FlaskConical/> Define research problem</button><button className="run" onClick={()=>setRunning(!running)}>{running?<Pause/>:<Play/>}{running?'Pause experiment':'Run research cycle'}</button></div></div>
       <div className="hangar-layout"><section className="scene-shell"><div className="scene-top"><span><Sparkles/> DIGITAL TWIN · 6-DOF</span><b>Solar Farm Inspection Mission</b><div>{['orbit','top','follow'].map(x=><button key={x} className={camera===x?'active':''} onClick={()=>setCamera(x)}>{x}</button>)}</div></div>
         <div className="scene"><HangarScene running={running} cameraMode={camera}/><div className="hud left"><small>FLIGHT STATE</small><b>{running?'SIMULATING':'STANDBY'}</b><em>MODEL ANX-X4 · v3.0</em></div><div className="hud right"><Wind/><span><small>WIND VECTOR</small><b>6.2 m/s · 238°</b></span></div><div className="hud bottom"><span>T+ {time.toFixed(1)} s</span><i><b style={{width:time+'%'}}/></i><span>60 FPS</span></div></div>
       </section><AgentRail running={running}/></div><ResearchTimeline running={running}/><MetricWave running={running}/>
-    </motion.section>:<motion.div key={view} initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-8}}><Workspace view={view}/></motion.div>}</AnimatePresence></main>
+    </motion.section>:<motion.div key={view} initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-8}}><Workspace view={view} onNavigate={setView}/></motion.div>}</AnimatePresence></main>
   </div>
 }
