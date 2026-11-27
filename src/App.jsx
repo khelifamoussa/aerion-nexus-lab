@@ -4,7 +4,7 @@ import { Activity, Atom, BookOpen, Box, BrainCircuit, CircleGauge, Database, Fil
 import HangarScene from './HangarScene'
 import LoginPortal, { AccessIdentity } from './LoginPortal'
 import { authMode, clearSession, listenForAuthChanges, loadSecureSession, restoreSession } from './security/auth'
-import { EvidenceWorkspace, PublicationWorkspace, SimulationWorkspace } from './ResearchWorkspaces'
+import { EvidenceWorkspace, PublicationWorkspace } from './ResearchWorkspaces'\nimport OperationalSimulation from './OperationalSimulation'\nimport OperationalAgents from './OperationalAgents'
 import { AgentWorkspace, AlgorithmWorkspace, DigitalTwinWorkspace, ManuscriptWorkspace } from './AdvancedWorkspaces'
 import ProblemWorkspace from './ProblemWorkspace'
 import { agents, metrics, modules, stages } from './labData'
@@ -34,11 +34,11 @@ function MetricWave({running}){
 
 function Workspace({view,onNavigate}){
   if(view==='Problem Definition') return <ProblemWorkspace onLaunch={()=>onNavigate('Four Agents')}/>
-  if(view==='Four Agents') return <AgentWorkspace/>
+  if(view==='Four Agents') return <OperationalAgents/>
   if(view==='Digital Twin') return <DigitalTwinWorkspace/>
   if(view==='Algorithms') return <AlgorithmWorkspace/>
   if(view==='Manuscript') return <ManuscriptWorkspace/>
-  if(view==='Simulation') return <SimulationWorkspace/>
+  if(view==='Simulation') return <OperationalSimulation/>
   if(view==='Evidence') return <EvidenceWorkspace/>
   if(view==='Publication') return <PublicationWorkspace/>
   if(view==='Legacy Agent View') return <section className="workspace"><header><small>ORCHESTRATION MATRIX</small><h2>Four-Agent Intelligence Center</h2></header><div className="agent-grid">{agents.map(a=><article key={a.id} style={{'--agent':a.color}}><span>{a.code}</span><h3>{a.name}</h3><p>{a.role}</p><div className="progress"><i style={{width:a.progress+'%'}}/></div><dl><dt>Current state</dt><dd>{a.state}</dd><dt>Audit status</dt><dd>Traceable</dd><dt>Quality gate</dt><dd>{a.id===4?'6 open':'Passed'}</dd></dl></article>)}</div></section>
