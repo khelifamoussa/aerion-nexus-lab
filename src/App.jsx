@@ -4,12 +4,12 @@ import { Activity, Atom, BookOpen, Box, BrainCircuit, CircleGauge, Database, Fil
 import HangarScene from './HangarScene'
 import LoginPortal, { AccessIdentity } from './LoginPortal'
 import { authMode, clearSession, listenForAuthChanges, loadSecureSession, restoreSession } from './security/auth'
-import { EvidenceWorkspace, PublicationWorkspace } from './ResearchWorkspaces'\nimport OperationalSimulation from './OperationalSimulation'\nimport OperationalAgents from './OperationalAgents'
+import { EvidenceWorkspace, PublicationWorkspace } from './ResearchWorkspaces'\nimport OperationalSimulation from './OperationalSimulation'\nimport OperationalAgents from './OperationalAgents'\nimport OperationalEvidence from './OperationalEvidence'\nimport { CriticalReviewWorkspace, OperationalManuscript } from './OperationalPublication'
 import { AgentWorkspace, AlgorithmWorkspace, DigitalTwinWorkspace, ManuscriptWorkspace } from './AdvancedWorkspaces'
 import ProblemWorkspace from './ProblemWorkspace'
 import { agents, metrics, modules, stages } from './labData'
 
-const nav=[['Mission Control',CircleGauge],['Problem Definition',FlaskConical],['Four Agents',BrainCircuit],['Digital Twin',Box],['Simulation',Activity],['Algorithms',Atom],['Evidence',Database],['Manuscript',FileText],['Publication',BookOpen]]
+const nav=[['Mission Control',CircleGauge],['Problem Definition',FlaskConical],['Four Agents',BrainCircuit],['Digital Twin',Box],['Simulation',Activity],['Algorithms',Atom],['Evidence',Database],['Manuscript',FileText],['Critical Review',ShieldCheck],['Publication',BookOpen]]
 
 function AgentRail({running}){
   return <div className="agent-rail">{agents.map(a=><motion.article key={a.id} whileHover={{x:5}} className="agent-node" style={{'--agent':a.color}}>
@@ -37,9 +37,9 @@ function Workspace({view,onNavigate}){
   if(view==='Four Agents') return <OperationalAgents/>
   if(view==='Digital Twin') return <DigitalTwinWorkspace/>
   if(view==='Algorithms') return <AlgorithmWorkspace/>
-  if(view==='Manuscript') return <ManuscriptWorkspace/>
+  if(view==='Manuscript') return <OperationalManuscript/>\n  if(view==='Critical Review') return <CriticalReviewWorkspace/>
   if(view==='Simulation') return <OperationalSimulation/>
-  if(view==='Evidence') return <EvidenceWorkspace/>
+  if(view==='Evidence') return <OperationalEvidence/>
   if(view==='Publication') return <PublicationWorkspace/>
   if(view==='Legacy Agent View') return <section className="workspace"><header><small>ORCHESTRATION MATRIX</small><h2>Four-Agent Intelligence Center</h2></header><div className="agent-grid">{agents.map(a=><article key={a.id} style={{'--agent':a.color}}><span>{a.code}</span><h3>{a.name}</h3><p>{a.role}</p><div className="progress"><i style={{width:a.progress+'%'}}/></div><dl><dt>Current state</dt><dd>{a.state}</dd><dt>Audit status</dt><dd>Traceable</dd><dt>Quality gate</dt><dd>{a.id===4?'6 open':'Passed'}</dd></dl></article>)}</div></section>
   if(view==='Legacy Algorithms') return <section className="workspace"><header><small>MODULAR SCIENTIFIC ENGINE</small><h2>Algorithm Engineering Bay</h2></header><div className="module-grid">{Object.entries(modules).map(([k,v])=><article key={k}><h3>{k}</h3>{v.map((m,i)=><button key={m}>{m}<span>{i<2?'STABLE':'ADVANCED'}</span></button>)}</article>)}</div></section>
